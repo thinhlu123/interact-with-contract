@@ -27,6 +27,19 @@ type ArgumentEthCall struct {
 	Args     []interface{}
 }
 
+// expect result
+//query {
+//	q1: block {
+//		call(data: {to: $to, data: $data}) {
+//			data
+//		}
+//	}
+//	q2: block {
+//		call(data: {to: $to, data: $data}) {
+//			data
+//		}
+//	}
+//}
 func genQuery(listQuery map[string]ArgumentEthCall) string {
 	var query string
 	for k, v := range listQuery {

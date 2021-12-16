@@ -16,9 +16,12 @@ func main() {
 		panic(err)
 	}
 
+	// erc20 contract
+	var contract = "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+
 	// method 1: Use abigen
 	// STEP: Find the abi on bscscan => save to your code and run abigen in generate.go
-	erc20, err := method.NewERC20Token(common.HexToAddress("0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"), eth)
+	erc20, err := method.NewERC20Token(common.HexToAddress(contract), eth)
 	if err != nil {
 		panic(err)
 	}
@@ -27,7 +30,7 @@ func main() {
 	fmt.Println(decimal)
 
 	// method 2: Use ethclient and abi
-	ethAbi := method.NewCustomClient(eth, "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", "abi/erc20.json")
+	ethAbi := method.NewCustomClient(eth, contract, "abi/erc20.json")
 	ethAbi.Call("decimals", nil)
 
 	// method 3: Use graphql
@@ -35,12 +38,12 @@ func main() {
 	method.GraphQLClient.Call(map[string]method.ArgumentEthCall{
 		"query1": {
 			Block: nil,
-			To:    "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
+			To:    contract,
 			Sign:  "decimals()",
 			Args:  nil,
 		},
 	})
 
 	// method 4: Use RPC
-	method.CallContractByRPC(nil, "", "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", "decimals()")
+	method.CallContractByRPC(nil, "", contract, "decimals()")
 }

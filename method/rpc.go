@@ -54,12 +54,13 @@ func CallContractByRPC(blockNumber *int64, from, to, sign string, args ...interf
 	}
 	defer resp.Body.Close()
 
-	//fmt.Println("response Status:", resp.Status)
-	//fmt.Println("response Headers:", resp.Header)
 	data, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("RPC result: ", string(data))
 }
 
+// Data in param
+// first 64 bytes is keccak256 of signature ex: decimals() -> 0x313ce567000000000000000000000000
+// then concat hex 64bytes of each args
 func genParam(blockNumber *int64, from, to, sign string, args []interface{}) []interface{} {
 	commonHash := "00000000000000000000000000000000000000000000000000000000000000000"
 	signHash := crypto.Keccak256Hash([]byte(sign))
