@@ -50,8 +50,8 @@ func (bl *CustomClient) Call(signature string, blockNumber *big.Int, args ...int
 		return
 	}
 
-	var trueResult interface{}
-	trueResult, err = bl.abi.Unpack(signature, result)
+	trueResult := make(map[string]interface{})
+	err = bl.abi.UnpackIntoMap(trueResult, signature, result)
 	if err != nil {
 		log.Println(err)
 	}

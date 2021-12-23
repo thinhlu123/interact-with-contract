@@ -29,9 +29,10 @@ func main() {
 	fmt.Print("Abigen result: ")
 	fmt.Println(decimal)
 
-	// method 2: Use ethclient and abi
+	// method 2: Use ethclient and package abi
 	ethAbi := method.NewCustomClient(eth, contract, "abi/erc20.json")
-	ethAbi.Call("decimals", nil)
+	ethAbi.Call("balanceOf", nil, common.HexToAddress("0xe1bfa3d9994a88f81909fd5d8cef2642159c4e78"))
+	ethAbi.Call("symbol", nil)
 
 	// method 3: Use graphql
 	method.InitGraphClient()
