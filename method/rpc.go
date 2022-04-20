@@ -65,7 +65,7 @@ func genParam(blockNumber *int64, from, to, sign string, args []interface{}) []i
 	commonHash := "00000000000000000000000000000000000000000000000000000000000000000"
 	signHash := crypto.Keccak256Hash([]byte(sign))
 	hashString := signHash.String()
-	data := hashString[:10] + "000000000000000000000000"
+	data := hashString[:10]
 
 	for i, arg := range args {
 		switch arg.(type) {
@@ -73,7 +73,7 @@ func genParam(blockNumber *int64, from, to, sign string, args []interface{}) []i
 			h := fmt.Sprintf("%x", arg)
 			length := len(h)
 			if length < 64 {
-				h += commonHash[:64-length]
+				h = commonHash[:64-length] + h
 			}
 
 			data += h
@@ -83,13 +83,13 @@ func genParam(blockNumber *int64, from, to, sign string, args []interface{}) []i
 			h := fmt.Sprintf("%x", argInt)
 			length := len(h)
 			if i < len(args)-1 && length < 64 {
-				h += commonHash[:64-length]
+				h = commonHash[:64-length] + h
 			}
 
 			data += h
 		case string:
 			argStr := arg.(string)
-			data += argStr[2:] + "000000000000000000000000"
+			data += "000000000000000000000000" + argStr[2:]
 		}
 	}
 
