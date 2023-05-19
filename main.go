@@ -47,4 +47,9 @@ func main() {
 
 	// method 4: Use RPC
 	method.CallContractByRPC(nil, "", contract, "decimals()")
+
+	// method 5: use abi package with input and output like [ "address", "uint256",  "uint256", "uint256" ]
+	ethAbi = method.NewCustomClientWithString(eth, contract, method.GenAbi([]string{"address"}, []string{"uint256"}))
+	ethAbi.Call("balanceOf", nil, common.HexToAddress("0xe1bfa3d9994a88f81909fd5d8cef2642159c4e78"))
+	ethAbi.Call("symbol", nil)
 }

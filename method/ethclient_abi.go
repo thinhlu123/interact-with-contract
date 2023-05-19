@@ -10,6 +10,7 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"strings"
 )
 
 type CustomClient struct {
@@ -26,6 +27,22 @@ func NewCustomClient(ethClient *ethclient.Client, contract, abiPath string) *Cus
 		panic(err)
 	}
 	parsed, err := abi.JSON(file)
+	if err != nil {
+		panic(err)
+	}
+
+	return &CustomClient{
+		ethClient: ethClient,
+		abi:       parsed,
+		contract:  ethereum.HexToAddress(contract),
+	}
+}
+
+func NewCustomClientWithString(ethClient *ethclient.Client, contract, abiStr string) *CustomClient {
+	//_, fileLocation, _, _ := runtime.Caller(1)
+	//abiPath = filepath.Join(fileLocation, abiPath)
+	abiReader := strings.NewReader(abiStr)
+	parsed, err := abi.JSON(abiReader)
 	if err != nil {
 		panic(err)
 	}
@@ -57,4 +74,39 @@ func (bl *CustomClient) Call(signature string, blockNumber *big.Int, args ...int
 	}
 
 	fmt.Println("EthClient_ABI result: ", trueResult)
+}
+
+func (bl *CustomClient) BalanceOf(wallet string, blockNumber *big.Int) (*big.Int, error) {
+	return bl.ethClient.BalanceAt(context.Background(), ethereum.HexToAddress(wallet), blockNumber)
+}
+
+func GenAbi(input []string, output []string) string {
+	in, out := "", ""
+	for _, item := range input {
+		in += fmt.Sprintf(`{
+        "internalType": "%v",
+        "name": "",
+        "type": "%v"
+      }`, item, item)
+	}
+
+	for _, item := range output {
+		out += fmt.Sprintf(`{
+        "internalType": "%v",
+        "name": "",
+        "type": "%v"
+      }`, item, item)
+	}
+
+	return fmt.Sprintf(`[{
+        "constant": true,
+        "inputs": [
+      %s
+    ],
+        "name": "balanceOf",
+        "outputs": [%s],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }]`, in, out)
 }
